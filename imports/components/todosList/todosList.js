@@ -8,12 +8,14 @@ import { Tasks } from '../../api/tasks.js';
 class TodosListCtrl {
   constructor($scope) {
     $scope.viewModel(this);
+    this.subscribe('tasks');
+
     this.hideCompleted = false;
 
     this.helpers({
       tasks() {
         const selector = {};
- 
+
         // If hide completed is checked, filter tasks
         if (this.getReactively('hideCompleted')) {
           selector.checked = {
@@ -27,7 +29,7 @@ class TodosListCtrl {
             createdAt: -1
           }
         });
-              },
+      },
       incompleteCount() {
         return Tasks.find({
           checked: {
@@ -53,9 +55,12 @@ class TodosListCtrl {
     // Set the checked property to the opposite of its current value
     Meteor.call('tasks.setChecked', task._id, !task.checked);
   }
- 
+
   removeTask(task) {
     Meteor.call('tasks.remove', task._id);
+  }
+  setPrivate(task) {
+    Meteor.call('tasks.setPrivate', task._id, !task.private);
   }
 }
 
